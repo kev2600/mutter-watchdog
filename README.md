@@ -1,51 +1,25 @@
-# NVIDIA Wayland Stability Toolkit: Complete Fix (Package v1.0)
+# 🛡️ Mutter Watchdog Stability Toolkit
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+## Project Overview
 
-This repository contains the complete, self-contained **NVIDIA Wayland Stability Toolkit**.
+This toolkit provides an essential stability layer for users experiencing frequent freezes, crashes, or instability issues related to running **GNOME/Mutter** on systems with **NVIDIA** GPUs, particularly when utilizing the **Wayland** display protocol.
 
----
+The `mutter-watchdog.py` script monitors system activity and automatically restarts the relevant display components (such as GDM or Mutter itself) when a failure is detected, ensuring swift, automated recovery.
 
-## 💡 Purpose: A Powerful Missing Layer for Stability
+## ⚙️ Prerequisites
 
-The NVIDIA Wayland Stability Toolkit acts as a **powerful missing layer**  to **mitigate** display instability and provide a **recoverable style** of operation in NVIDIA Wayland/Mutter environments.
+* A Linux distribution running **systemd** (e.g., Ubuntu, Fedora, Zorin OS).
+* **Python 3.x** must be installed.
+* **SQLite3** database support (usually present by default).
 
-This package provides a set of services that soft-contain stability issues by:
-1.  **Continuous Monitoring:** Tracking critical events such as NVIDIA driver changes, screen disconnects, and session transitions.
-2.  **State Recovery:** Automatically and reliably reapplying your correct screen resolution and display settings to maintain a stable, consistent desktop state.
+## 🚀 Deployment (Installation)
 
-This package also resolves two key deployment issues that prevented the original toolkit from functioning correctly on modern Linux distributions:
-* The "unable to open database file" startup error.
-* Security context errors (e.g., status 216/GROUP) by ensuring correct deployment as a systemd user service.
+The simplest way to install and activate the Watchdog is using the provided deployment script.
 
-## 🛠️ Prerequisites
+### 1. Clone the Repository
 
-This package is self-contained. The only prerequisite is that your system must be running:
-* A modern Linux distribution (using `systemd`).
-* A user session with a D-Bus environment.
-
-## 🚀 Deployment Instructions
-
-The repository includes a robust installer script (`deploy-mutter-watchdog.sh`) that handles dependencies and service management.
-
-### 1. Download and Extract
-
-Clone the repository or download the final compressed archive: `mutter-watchdog-full-toolkit.tar.gz`.
-
-# Example for extracting the archive
-```bash
-tar -xzvf mutter-watchdog-full-toolkit.tar.gz
-```
-2. Run the Installer (deploy-mutter-watchdog.sh)
-The installer will copy the core script (mutter-watchdog.py), deploy the fixed unit file, check for the required Python dependencies (python3-pydbus), and activate the service.
+First, clone the project to your local machine (using the stable SSH method):
 
 ```bash
-./deploy-mutter-watchdog.sh
-```
-3. Verification
-The service should now be running and will persist across reboots.
-```bash
-systemctl --user status mutter-watchdog@$(whoami).service
-```
-⚖️ Licensing
-This software is released under the GNU General Public License, Version 3 (GPLv3). See the LICENSE file for the full text.
+git clone git@github.com:kev2600/mutter-watchdog.git
+cd mutter-watchdog
