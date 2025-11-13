@@ -45,5 +45,6 @@ The service should now be running and will persist across reboots.
 ./deploy-mutter-watchdog.sh
 systemctl --user status mutter-watchdog@$(whoami).service
 
+```
 ⚖️ Licensing
 This software is released under the GNU General Public License, Version 3 (GPLv3). See the LICENSE file for the full text.
