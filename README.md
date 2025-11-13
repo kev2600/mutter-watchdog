@@ -6,13 +6,13 @@ This repository contains the complete, self-contained **NVIDIA Wayland Stability
 
 ---
 
-## 💡 Purpose
+## 💡 Purpose: A Powerful Missing Layer for Stability
 
-The NVIDIA Wayland Stability Toolkit is designed to **bypass the flaky and limited functionality of Wayland and Mutter**  by ensuring reliable display management in NVIDIA environments.
+The NVIDIA Wayland Stability Toolkit acts as a **powerful missing layer**  to **mitigate** display instability and provide a **recoverable style** of operation in NVIDIA Wayland/Mutter environments.
 
-This package provides a set of services that:
-1.  **Monitor critical events** such as NVIDIA driver updates, screen disconnects, and session changes.
-2.  **Automatically reapply your screen resolution and display settings** to maintain a consistent, stable desktop experience.
+This package provides a set of services that soft-contain stability issues by:
+1.  **Continuous Monitoring:** Tracking critical events such as NVIDIA driver changes, screen disconnects, and session transitions.
+2.  **State Recovery:** Automatically and reliably reapplying your correct screen resolution and display settings to maintain a stable, consistent desktop state.
 
 This package also resolves two key deployment issues that prevented the original toolkit from functioning correctly on modern Linux distributions:
 * The "unable to open database file" startup error.
