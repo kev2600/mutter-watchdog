@@ -1,32 +1,62 @@
-  GNU nano 8.3                                  /home/kev/mutter-watchdog-full-toolkit/deploy-mutter-watchdog.sh                                             
-# --- 3. CLEANUP & DEPLOYMENT OF UNIT FILE ---
+#!/bin/bash
 
-echo "3.1. Disabling old, failing system service: $SYSTEM_SERVICE"
-sudo systemctl disable --now "$SYSTEM_SERVICE" || true
+# --- 1. SYSTEM SERVICE DEPLOYMENT (GDM Monitor) ---
+# Runs as root, starts early, and uses a system-wide data directory.
 
-echo "3.2. Deploying final unit file to $UNIT_FILE_DEST"
-# Copy the provided unit file to the system location
-sudo cp "$UNIT_FILE_SOURCE" "$UNIT_FILE_DEST/mutter-watchdog@.service"
+echo "--- 1. Deploying System Service (GDM/Boot Monitor) ---"
 
-# --- 4. SERVICE ACTIVATION & PERSISTENCE ---
+SYSTEM_UNIT_NAME="mutter-watchdog-system.service"
+SYSTEM_UNIT_FILE="mutter-watchdog-system.service.final"
 
-echo "4.1. Reloading systemd to find the new unit file..."
-systemctl --user daemon-reload
+# 1a. Create the required system data directory if it doesn't exist
+sudo mkdir -p /var/lib/mutter-watchdog
+sudo chown root:root /var/lib/mutter-watchdog
+sudo chmod 755 /var/lib/mutter-watchdog
 
-echo "4.2. Enabling and RESTARTING the service: $SERVICE_NAME"
-# CRITICAL FIX: Use 'restart' to ensure the service loads the new config,
-# even if it was already running.
-systemctl --user enable "$SERVICE_NAME"
-systemctl --user restart "$SERVICE_NAME"
+# 1b. Copy and enable the System Service unit file
+sudo cp "$SYSTEM_UNIT_FILE" "/etc/systemd/system/$SYSTEM_UNIT_NAME"
+sudo chmod 644 "/etc/systemd/system/$SYSTEM_UNIT_NAME"
 
-# --- 5. FINAL VERIFICATION ---
+sudo systemctl daemon-reload
+sudo systemctl enable "$SYSTEM_UNIT_NAME"
 
-echo "5.1. Verifying service status..."
-systemctl --user status "$SERVICE_NAME" | head -n 12
+echo "✅ System Service ($SYSTEM_UNIT_NAME) deployed and enabled for boot."
+echo "   This monitors pre-login (GDM) crashes."
+echo "---"
 
-echo "--- DEPLOYMENT COMPLETE ---"
+# --- 2. USER SERVICE DEPLOYMENT (Session Monitor) ---
+# Runs as the current user, starts after login, and uses the user's $HOME/.config directory.
 
+echo "--- 2. Deploying User Service (Session Monitor) ---"
 
-^G Help          ^O Write Out     ^F Where Is	   ^K Cut           ^T Execute       ^C Location      M-U Undo         M-A Set Mark     M-] To Bracket
-^X Exit          ^R Read File     ^\ Replace	   ^U Paste         ^J Justify       ^/ Go To Line    M-E Redo         M-6 Copy         ^B Where Was
+USER_UNIT_NAME="mutter-watchdog-user.service"
+USER_UNIT_FILE="mutter-watchdog-user.service.final"
 
+# Get the current non-root user's home directory path
+if [ "$SUDO_USER" ]; then
+    USER_HOME=$(eval echo "~$SUDO_USER")
+else
+    USER_HOME=$HOME
+fi
+USER_CONFIG_DIR="$USER_HOME/.config/systemd/user"
+
+echo "Deploying User Service to $USER_CONFIG_DIR..."
+
+# 2a. Ensure the user's systemd directory exists
+mkdir -p "$USER_CONFIG_DIR"
+
+# 2b. Copy the User Service unit file
+cp "$USER_UNIT_FILE" "$USER_CONFIG_DIR/$USER_UNIT_NAME"
+
+# 2c. Create the User's data directory for the SQLite DB
+mkdir -p "$USER_HOME/.config/mutter-watchdog"
+
+echo "✅ User Service ($USER_UNIT_NAME) unit file deployed to user configuration."
+echo "---"
+
+# --- 3. ACTIVATION INSTRUCTIONS ---
+
+echo "Deployment Complete."
+echo "To activate the User Service (post-login monitor), run:"
+echo "systemctl --user daemon-reload"
+echo "systemctl --user enable --now $USER_UNIT_NAME"
