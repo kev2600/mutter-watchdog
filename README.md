@@ -38,7 +38,7 @@ This scope covers approximately **40-50% of major, actively maintained Linux dis
 ### Prerequisites
 
 * A Linux distribution running **systemd**.
-* **Python 3.x** must be installed.
+* **Python 3.x** must be installed or will be installed if missing
 * **SQLite3** database support (usually present by default).
 
 ### 1. Clone the Repository
