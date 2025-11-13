@@ -73,7 +73,7 @@ It will now run automatically on every boot.
 ### Check Service Status
 
 ```bash
-systemctl status mutter-watchdog@.service
+systemctl --user status mutter-watchdog.service
 ```
 
 ### View Logs
