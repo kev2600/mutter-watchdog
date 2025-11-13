@@ -3,7 +3,15 @@
 # --- 1. SYSTEM SERVICE DEPLOYMENT (GDM Monitor) ---
 # Runs as root, starts early, and uses a system-wide data directory.
 
+# --- 0. Copy Main Python Script to Executable Location ---
+echo "0. Copying main Python script to /usr/sbin/..."
+sudo cp mutter-watchdog.py /usr/sbin/mutter-watchdog.py
+sudo chmod +x /usr/sbin/mutter-watchdog.py
+
 echo "--- 1. Deploying System Service (GDM/Boot Monitor) ---"
+
+SYSTEM_UNIT_NAME="mutter-watchdog-system.service"
+# ... rest of the script continues below ...
 
 SYSTEM_UNIT_NAME="mutter-watchdog-system.service"
 SYSTEM_UNIT_FILE="mutter-watchdog-system.service.final"
