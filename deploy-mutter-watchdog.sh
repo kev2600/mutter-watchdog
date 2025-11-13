@@ -57,6 +57,9 @@ echo "---"
 # --- 3. ACTIVATION INSTRUCTIONS ---
 
 echo "Deployment Complete."
-echo "To activate the User Service (post-login monitor), run:"
+echo "---"
+echo "To activate the User Service (post-login monitor) and make it persistent, run:"
 echo "systemctl --user daemon-reload"
-echo "systemctl --user enable --now $USER_UNIT_NAME"
+echo "systemctl --user start $USER_UNIT_NAME"
+echo " "
+echo "Since the 'enable' command can fail on some distributions, you must ensure the service starts at boot via your desktop's 'Startup Applications' tool or other user-specific autostart methods."
