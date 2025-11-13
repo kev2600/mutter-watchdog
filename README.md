@@ -33,18 +33,19 @@ The repository includes a robust installer script (`deploy-mutter-watchdog.sh`) 
 Clone the repository or download the final compressed archive: `mutter-watchdog-full-toolkit.tar.gz`.
 
 # Example for extracting the archive
+```bash
 tar -xzvf mutter-watchdog-full-toolkit.tar.gz
-
+```
 2. Run the Installer (deploy-mutter-watchdog.sh)
 The installer will copy the core script (mutter-watchdog.py), deploy the fixed unit file, check for the required Python dependencies (python3-pydbus), and activate the service.
 
-
+```bash
+./deploy-mutter-watchdog.sh
+```
 3. Verification
 The service should now be running and will persist across reboots.
 ```bash
-./deploy-mutter-watchdog.sh
 systemctl --user status mutter-watchdog@$(whoami).service
-
 ```
 ⚖️ Licensing
 This software is released under the GNU General Public License, Version 3 (GPLv3). See the LICENSE file for the full text.
