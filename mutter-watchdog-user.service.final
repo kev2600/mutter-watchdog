@@ -1,1 +1,12 @@
+[Unit]
+Description=NVIDIA Wayland Stability Toolkit - Session Crash Watchdog for %i
+After=default.target
+
+[Service]
+Type=simple
 ExecStart=/bin/bash -c "/usr/sbin/mutter-watchdog.py --data-dir $HOME/.config/mutter-watchdog"
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
