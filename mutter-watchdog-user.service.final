@@ -1,1 +1,1 @@
-ExecStart=/usr/sbin/mutter-watchdog.py --data-dir $HOME/.config/mutter-watchdog
+ExecStart=/bin/bash -c "/usr/sbin/mutter-watchdog.py --data-dir $HOME/.config/mutter-watchdog"

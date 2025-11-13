@@ -1,28 +1,4 @@
-#!/bin/bash
-# FINAL Distro-Agnostic Deployment Script (Wrapper Eliminated)
-
-# --- 1. CONFIGURATION ---
-UNIT_FILE_SOURCE="mutter-watchdog@.service.final"
-UNIT_FILE_DEST="/etc/systemd/user/"
-SERVICE_NAME="mutter-watchdog@$(whoami).service"
-SYSTEM_SERVICE="mutter-watchdog.service"
-
-echo "--- STARTING ULTIMATE MUTTER WATCHDOG DEPLOYMENT ---"
-
-# --- 2. DYNAMIC DEPENDENCY INSTALLATION ---
-
-echo "2.1. Installing global Python dependency (python3-pydbus)..."
-if command -v dnf &> /dev/null; then
-    sudo dnf install -y python3-pydbus
-elif command -v apt &> /dev/null; then
-    sudo apt update
-    sudo apt install -y python3-pydbus
-elif command -v pacman &> /dev/null; then
-    sudo pacman -Sy python-pydbus
-else
-    echo "WARNING: Could not detect known package manager. Please install 'python3-pydbus' manually."
-fi
-
+  GNU nano 8.3                                  /home/kev/mutter-watchdog-full-toolkit/deploy-mutter-watchdog.sh                                             
 # --- 3. CLEANUP & DEPLOYMENT OF UNIT FILE ---
 
 echo "3.1. Disabling old, failing system service: $SYSTEM_SERVICE"
@@ -49,3 +25,8 @@ echo "5.1. Verifying service status..."
 systemctl --user status "$SERVICE_NAME" | head -n 12
 
 echo "--- DEPLOYMENT COMPLETE ---"
+
+
+^G Help          ^O Write Out     ^F Where Is	   ^K Cut           ^T Execute       ^C Location      M-U Undo         M-A Set Mark     M-] To Bracket
+^X Exit          ^R Read File     ^\ Replace	   ^U Paste         ^J Justify       ^/ Go To Line    M-E Redo         M-6 Copy         ^B Where Was
+
