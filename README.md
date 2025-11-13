@@ -35,7 +35,7 @@ Clone the repository or download the final compressed archive: `mutter-watchdog-
 # Example for extracting the archive
 tar -xzvf mutter-watchdog-full-toolkit.tar.gz
 
-2. Run the Installer
+2. Run the Installer (deploy-mutter-watchdog.sh)
 The installer will copy the core script (mutter-watchdog.py), deploy the fixed unit file, check for the required Python dependencies (python3-pydbus), and activate the service.
 
 
