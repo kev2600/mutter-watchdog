@@ -5,7 +5,7 @@ After=graphical-session.target
 
 [Service]
 Type=exec
-ExecStart=/usr/sbin/mutter-watchdog.py --data-dir=/home/%i/.config/mutter-watchdog
+ExecStart=/usr/sbin/mutter-watchdog.py --data-dir /home/kev/.config/mutter-watchdog
 Restart=always
 RestartSec=5s
 
