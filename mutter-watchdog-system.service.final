@@ -1,6 +1,6 @@
 [Service]
 Type=simple
-ExecStart=/bin/bash -c "/usr/sbin/mutter-watchdog.py --data-dir /var/lib/mutter-watchdog"
+ExecStart=/usr/sbin/mutter-watchdog.py --data-dir /var/lib/mutter-watchdog
 Restart=always
 RestartSec=5
 [Install]
