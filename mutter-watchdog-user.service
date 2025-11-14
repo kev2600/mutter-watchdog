@@ -1,0 +1,10 @@
+[Unit]
+Description=Mutter Watchdog (User Session)
+After=graphical-session.target
+
+[Service]
+ExecStart=/usr/sbin/mutter-watchdog.py --data-dir=/home/lappy/.local/share/mutter-watchdog
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
