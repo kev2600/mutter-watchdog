@@ -21,3 +21,18 @@ sudo journalctl -u mutter-watchdog -b
 journalctl --user -u mutter-watchdog -b
 
 Note: “WATCHDOG: Not a Wayland session” from the system service before login is expected. The user service stays active after login.
+## Dependencies & Troubleshooting
+
+Mutter Watchdog requires a few Python libraries to connect to D-Bus:
+
+- `python3-pydbus`
+- `python3-gobject`
+
+### Installing dependencies
+
+On Fedora:
+```bash
+sudo dnf install python3-pydbus python3-gobject
+On Ubuntu/Debian:sudo apt install python3-pydbus python3-gi
+On Arch Linux:sudo pacman -S python-pydbus python-gobject
+
