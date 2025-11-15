@@ -1,73 +1,49 @@
 #!/bin/bash
+set -e
 
-# --- 1. SYSTEM SERVICE DEPLOYMENT (GDM Monitor) ---
-# Runs as root, starts early, and uses a system-wide data directory.
+echo ">>> Deploying Mutter Watchdog..."
 
-# --- 0. Copy Main Python Script to Executable Location ---
-echo "0. Copying main Python script to /usr/sbin/..."
+# --- 1. Install Python script ---
+echo ">>> Copying Python script to /usr/sbin/"
 sudo cp mutter-watchdog.py /usr/sbin/mutter-watchdog.py
-sudo chmod +x /usr/sbin/mutter-watchdog.py
+sudo chmod 755 /usr/sbin/mutter-watchdog.py
 
-echo "--- 1. Deploying System Service (GDM/Boot Monitor) ---"
+# --- 2. System Service Setup ---
+echo ">>> Installing system service"
+sudo cp mutter-watchdog-system.service.final /etc/systemd/system/mutter-watchdog.service
 
-SYSTEM_UNIT_NAME="mutter-watchdog-system.service"
-# ... rest of the script continues below ...
-
-SYSTEM_UNIT_NAME="mutter-watchdog-system.service"
-SYSTEM_UNIT_FILE="mutter-watchdog-system.service.final"
-
-# 1a. Create the required system data directory if it doesn't exist
+echo ">>> Creating system data directory"
 sudo mkdir -p /var/lib/mutter-watchdog
 sudo chown root:root /var/lib/mutter-watchdog
-sudo chmod 755 /var/lib/mutter-watchdog
 
-# 1b. Copy and enable the System Service unit file
-sudo cp "$SYSTEM_UNIT_FILE" "/etc/systemd/system/$SYSTEM_UNIT_NAME"
-sudo chmod 644 "/etc/systemd/system/$SYSTEM_UNIT_NAME"
+# --- 3. User Service Setup ---
+USER_HOME=$(eval echo ~"$USER")
+USER_UNIT_NAME="mutter-watchdog.service"
 
+echo ">>> Installing user service"
+mkdir -p "$USER_HOME/.config/systemd/user"
+cp mutter-watchdog-user.service "$USER_HOME/.config/systemd/user/$USER_UNIT_NAME"
+
+echo ">>> Creating user data directory"
+mkdir -p "$USER_HOME/.local/share/mutter-watchdog"
+
+# --- 4. Reload systemd ---
+echo ">>> Reloading systemd"
 sudo systemctl daemon-reload
-sudo systemctl enable "$SYSTEM_UNIT_NAME"
+systemctl --user daemon-reload
 
-echo "✅ System Service ($SYSTEM_UNIT_NAME) deployed and enabled for boot."
-echo "   This monitors pre-login (GDM) crashes."
-echo "---"
+# --- 5. Enable and start services ---
+echo ">>> Enabling and starting system service"
+sudo systemctl enable --now mutter-watchdog
 
-# --- 2. USER SERVICE DEPLOYMENT (Session Monitor) ---
-# Runs as the current user, starts after login, and uses the user's $HOME/.config directory.
+echo ">>> Enabling and starting user service"
+systemctl --user enable --now mutter-watchdog || echo "⚠️ Enable failed, service will still start but may not persist across reboot."
 
-echo "--- 2. Deploying User Service (Session Monitor) ---"
-
-USER_UNIT_NAME="mutter-watchdog-user.service"
-USER_UNIT_FILE="mutter-watchdog-user.service.final"
-
-# Get the current non-root user's home directory path
-if [ "$SUDO_USER" ]; then
-    USER_HOME=$(eval echo "~$SUDO_USER")
-else
-    USER_HOME=$HOME
-fi
-USER_CONFIG_DIR="$USER_HOME/.config/systemd/user"
-
-echo "Deploying User Service to $USER_CONFIG_DIR..."
-
-# 2a. Ensure the user's systemd directory exists
-mkdir -p "$USER_CONFIG_DIR"
-
-# 2b. Copy the User Service unit file
-cp "$USER_UNIT_FILE" "$USER_CONFIG_DIR/$USER_UNIT_NAME"
-
-# 2c. Create the User's data directory for the SQLite DB
-mkdir -p "$USER_HOME/.config/mutter-watchdog"
-
-echo "✅ User Service ($USER_UNIT_NAME) unit file deployed to user configuration."
-echo "---"
-
-# --- 3. ACTIVATION INSTRUCTIONS ---
-
-echo "Deployment Complete."
-echo "---"
-echo "To activate the User Service (post-login monitor) and make it persistent, run:"
-echo "systemctl --user daemon-reload"
-echo "systemctl --user start $USER_UNIT_NAME"
-echo " "
-echo "Since the 'enable' command can fail on some distributions, you must ensure the service starts at boot via your desktop's 'Startup Applications' tool or other user-specific autostart methods."
+# --- 6. Done ---
+echo "✅ Deployment Complete."
+echo "Check status with:"
+echo "  sudo systemctl status mutter-watchdog   # System service"
+echo "  systemctl --user status mutter-watchdog # User service"
+echo "Logs available via journalctl:"
+echo "  sudo journalctl -u mutter-watchdog -b"
+echo "  journalctl --user -u mutter-watchdog -b"
